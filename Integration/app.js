@@ -140,7 +140,7 @@ app.get('/api/trade', async (req, res) => {
 	const request = {
 		chaincodeId: 'tradefinancecc',
 		fcn: 'getTrade',
-		args: [req.query.tfId]
+		args: [req.params.tfId]
 	};
 	req.channel.queryByChaincode(request).then((query_responses) => {
 		if (query_responses && query_responses.length == 1) {
@@ -491,7 +491,7 @@ app.get('/api/trade/:tfid/history', async (req, res) => {
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'tradefinancecc',
 		fcn: 'tFHistory',
-		args: [req.query.tfid]
+		args: [req.params.tfid]
 	};
 	req.channel.queryByChaincode(request).then((query_responses) => {
 		console.log("Query has completed, checking results");
@@ -519,14 +519,14 @@ app.get('/api/blockchain', async (req, res) => {
 	})
 });
 app.get('/api/block', async (req, res) => {
-	req.channel.queryBlockByTxID(req.query.txid).then((block) => {
+	req.channel.queryBlockByTxID(req.params.txid).then((block) => {
 		res.status(200).json(block);
 	}).catch(function (err) {
 		res.status(500).json({ error: err.toString() })
 	})
 });
 app.get('/api/trans', async (req, res) => {
-	req.channel.queryTransaction(req.query.txid).then((trans) => {
+	req.channel.queryTransaction(req.params.txid).then((trans) => {
 		res.status(200).json(trans);
 	}).catch(function (err) {
 		res.status(500).json({ error: err.toString() })
