@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Car History</h1>
+<div mat-dialog-content>
+ <p *ngFor="let item of data">
+   <span *ngIf="item.IsDelete=='false'">{{item.Record.make}},{{item.Record.model}},{{item.Record.colour}},{{item.Record.owner}}</span>
+   <span *ngIf="item.IsDelete=='true'" style="color:red">Deleted</span>
+
+  </p>
+ 
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Ok</button>
+</div>

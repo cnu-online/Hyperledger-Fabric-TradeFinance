@@ -1,0 +1,79 @@
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/tradefinance.com/msp
+    - &bnk1
+        Name: bnk1msp
+        ID: bnk1msp
+        MSPDir: crypto-config/peerOrganizations/bnk1.tradefinance.com/msp
+        AnchorPeers:
+            - Host: peer0.bnk1.tradefinance.com
+              Port: 5051
+    - &bnk2
+        Name: bnk2msp
+        ID: bnk2msp
+        MSPDir: crypto-config/peerOrganizations/bnk2.tradefinance.com/msp
+        AnchorPeers:
+            - Host: peer0.bnk2.tradefinance.com
+              Port: 6051    
+    - &cmp1
+        Name: cmp1msp
+        ID: cmp1msp
+        MSPDir: crypto-config/peerOrganizations/cmp1.tradefinance.com/msp
+        AnchorPeers:
+            - Host: peer0.cmp1.tradefinance.com
+              Port: 7051    
+    - &cmp2
+        Name: cmp2msp
+        ID: cmp2msp
+        MSPDir: crypto-config/peerOrganizations/cmp2.tradefinance.com/msp
+        AnchorPeers:
+            - Host: peer0.cmp2.tradefinance.com
+              Port: 8051
+    - &rgl1
+        Name: rgl1msp
+        ID: rgl1msp
+        MSPDir: crypto-config/peerOrganizations/rgl1.tradefinance.com/msp
+        AnchorPeers:
+            - Host: peer0.rgl1.tradefinance.com
+              Port: 9051
+Application: &ApplicationDefaults
+    Organizations:
+Orderer: &OrdererDefaults
+    OrdererType: solo
+    Addresses:
+        - orderer.tradefinance.com:7050
+    BatchTimeout: 20s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Kafka:
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+Profiles:
+    BlockOrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            BlockConsortium:
+                Organizations:
+                    - *bnk1
+                    - *bnk2
+                    - *cmp1
+                    - *cmp2
+                    - *rgl1
+    BlockChannel:
+        Consortium: BlockConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *bnk1
+                - *bnk2
+                - *cmp1
+                - *cmp2
+                - *rgl1

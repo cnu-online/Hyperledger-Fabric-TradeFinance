@@ -1,0 +1,75 @@
+<form [formGroup]="carForm" novalidate (ngSubmit)="onSubmit($event)">
+  <mat-card class="car-card">
+    <mat-card-header>
+      <mat-card-title *ngIf="car">{{formTitle}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row" *ngIf="!IsNew">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput readonly placeholder="Car Key" formControlName="key" [(ngModel)]="car.key">
+            <mat-error *ngIf="carForm.controls['key'].hasError('required')">
+              key is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Owner Name" [(ngModel)]="car.owner" formControlName="owner">
+            <mat-error *ngIf="carForm.controls['owner'].hasError('required')">
+              Owner is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Make" [(ngModel)]="car.make" formControlName="make">
+            <mat-error *ngIf="carForm.controls['make'].hasError('required')">
+              Make is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Model" [(ngModel)]="car.model" formControlName="model">
+            <mat-error *ngIf="carForm.controls['model'].hasError('required')">
+              Model is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <textarea matInput placeholder="Color" [(ngModel)]="car.colour" formControlName="colour"></textarea>
+            <mat-error *ngIf="carForm.controls['colour'].hasError('required')">
+              Color is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </mat-card-content>
+    <mat-card-actions>
+      <div fxFlex="row" fxFlexAlign="stretch">
+        <button fxFlex color="primary" type="submit" mat-icon-button>
+          <mat-icon>done</mat-icon>
+        </button>
+        <button  fxFlex color="primary" (click)="deleteCar()" type="button" mat-icon-button>
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button fxFlex color="primary" (click)="clear()" type="button" mat-icon-button>
+          <mat-icon>add</mat-icon>
+        </button>
+        <button  fxFlex color="primary" (click)="info()" type="button" mat-icon-button>
+          <mat-icon>info</mat-icon>
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</form>

@@ -1,0 +1,37 @@
+
+OrdererOrgs:
+  - Name: Orderer
+    Domain: tradefinance.com
+    Specs:
+      - Hostname: orderer
+PeerOrgs:
+  - Name: bnk1
+    Domain: bnk1.tradefinance.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+  - Name: bnk2
+    Domain: bnk2.tradefinance.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+  - Name: cmp1
+    Domain: cmp1.tradefinance.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+  - Name: cmp2
+    Domain: cmp2.tradefinance.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+  - Name: rgl1
+    Domain: rgl1.tradefinance.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1

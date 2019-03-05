@@ -1,0 +1,365 @@
+#
+# Copyright IBM Corp All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#curl -sSL http://bit.ly/2ysbOFE | bash -s 1.3.0 1.3.0 0.4.13
+version: '2'
+
+networks:
+  tradefinance:
+services:
+
+  ca.bnk1.tradefinance.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.bnk1.tradefinance.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.bnk1.tradefinance.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/efdb08e519f63e4c3f0a39e7e7074ff29cb5248b107b730d2434db140b07d05f_sk
+    ports:
+      - "5054:7054"
+    command: sh -c 'fabric-ca-server start -b bnk1admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/bnk1.tradefinance.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.bnk1.tradefinance.com
+    networks:
+      - tradefinance
+  ca.bnk2.tradefinance.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.bnk2.tradefinance.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.bnk2.tradefinance.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/751f3e796a276a0be978c9c9918792560864acc572755ad1ac65e0861fb0c010_sk
+    ports:
+      - "6054:7054"
+    command: sh -c 'fabric-ca-server start -b bnk2admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/bnk2.tradefinance.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.bnk2.tradefinance.com
+    networks:
+      - tradefinance
+  ca.cmp1.tradefinance.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.cmp1.tradefinance.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.cmp1.tradefinance.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/830f16a63b457046f5a4e9ca44032a24b5f8f5282ecd1a3c30b3192eaadad42f_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b cmp1admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/cmp1.tradefinance.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.cmp1.tradefinance.com
+    networks:
+      - tradefinance
+  ca.cmp2.tradefinance.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.cmp2.tradefinance.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.cmp2.tradefinance.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/643d505abf7218a33aaed1be15ae4897413c94f5774acd6b05357b9217dd4fc9_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b cmp2admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/cmp2.tradefinance.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.cmp2.tradefinance.com
+    networks:
+      - tradefinance
+  ca.rgl1.tradefinance.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.rgl1.tradefinance.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.rgl1.tradefinance.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/2120855e1fe3684c24c4264a81a121cf73b61d2cef4120a476be87db9f41a032_sk
+    ports:
+    
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start -b rgl1admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/rgl1.tradefinance.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.rgl1.tradefinance.com
+    networks:
+      - tradefinance
+      
+  orderer.tradefinance.com:
+    container_name: orderer.tradefinance.com
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=info
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/commongenesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ./config/:/etc/hyperledger/configtx
+        - ./crypto-config/ordererOrganizations/tradefinance.com/orderers/orderer.tradefinance.com/:/etc/hyperledger/msp/orderer
+        - ./crypto-config/peerOrganizations/bnk1.tradefinance.com/peers/peer0.bnk1.tradefinance.com/:/etc/hyperledger/msp/peerbnk1
+    networks:
+      - tradefinance
+
+  peer0.bnk1.tradefinance.com:
+    container_name: peer0.bnk1.tradefinance.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.bnk1.tradefinance.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=bnk1msp
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.bnk1.tradefinance.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_tradefinance
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 5051:7051
+      - 5053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/bnk1.tradefinance.com/peers/peer0.bnk1.tradefinance.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/bnk1.tradefinance.com/users:/etc/hyperledger/msp/users
+        - ./config/:/etc/hyperledger/configtx
+        # - ./chaincode/:/opt/gopath/src/github.com/
+    depends_on:
+      - orderer.tradefinance.com
+      - couchdb0
+    networks:
+      - tradefinance
+  peer0.bnk2.tradefinance.com:
+    container_name: peer0.bnk2.tradefinance.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.bnk2.tradefinance.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=bnk2msp
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.bnk2.tradefinance.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_tradefinance
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 6051:7051
+      - 6053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/bnk2.tradefinance.com/peers/peer0.bnk2.tradefinance.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/bnk2.tradefinance.com/users:/etc/hyperledger/msp/users
+        - ./config/:/etc/hyperledger/configtx
+        # - ./chaincode/:/opt/gopath/src/github.com/
+    depends_on:
+      - orderer.tradefinance.com
+      - couchdb1
+    networks:
+      - tradefinance
+  peer0.cmp1.tradefinance.com:
+    container_name: peer0.cmp1.tradefinance.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.cmp1.tradefinance.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=cmp1msp
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.cmp1.tradefinance.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_tradefinance
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/cmp1.tradefinance.com/peers/peer0.cmp1.tradefinance.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/cmp1.tradefinance.com/users:/etc/hyperledger/msp/users
+        - ./config/:/etc/hyperledger/configtx
+        # - ./chaincode/:/opt/gopath/src/github.com/
+    depends_on:
+      - orderer.tradefinance.com
+      - couchdb2
+    networks:
+      - tradefinance
+  peer0.cmp2.tradefinance.com:
+    container_name: peer0.cmp2.tradefinance.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.cmp2.tradefinance.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=cmp2msp
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.cmp2.tradefinance.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_tradefinance
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/cmp2.tradefinance.com/peers/peer0.cmp2.tradefinance.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/cmp2.tradefinance.com/users:/etc/hyperledger/msp/users
+        - ./config/:/etc/hyperledger/configtx
+        # - ./chaincode/:/opt/gopath/src/github.com/
+    depends_on:
+      - orderer.tradefinance.com
+      - couchdb3
+    networks:
+      - tradefinance
+  peer0.rgl1.tradefinance.com:
+    container_name: peer0.rgl1.tradefinance.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.rgl1.tradefinance.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=rgl1msp
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.rgl1.tradefinance.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_tradefinance
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 9051:7051
+      - 9053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/rgl1.tradefinance.com/peers/peer0.rgl1.tradefinance.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/rgl1.tradefinance.com/users:/etc/hyperledger/msp/users
+        - ./config/:/etc/hyperledger/configtx
+        # - ./chaincode/:/opt/gopath/src/github.com/
+    depends_on:
+      - orderer.tradefinance.com
+      - couchdb4
+    networks:
+      - tradefinance
+  
+  couchdb0:
+    container_name: couchdb0
+    image: hyperledger/fabric-couchdb:$THIRDPARTYIMAGE_TAG
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+    networks:
+      - tradefinance
+  couchdb1:
+    container_name: couchdb1
+    image: hyperledger/fabric-couchdb:$THIRDPARTYIMAGE_TAG
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 6984:5984
+    networks:
+      - tradefinance
+  couchdb2:
+    container_name: couchdb2
+    image: hyperledger/fabric-couchdb:$THIRDPARTYIMAGE_TAG
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 7984:5984
+    networks:
+    - tradefinance
+  couchdb3:
+    container_name: couchdb3
+    image: hyperledger/fabric-couchdb:$THIRDPARTYIMAGE_TAG
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 8984:5984
+    networks:
+      - tradefinance
+  couchdb4:
+    container_name: couchdb4
+    image: hyperledger/fabric-couchdb:$THIRDPARTYIMAGE_TAG
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 9984:5984
+    networks:
+      - tradefinance
+  
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=info
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.bnk1.tradefinance.com:7051
+      - CORE_PEER_LOCALMSPID=bnk1msp
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/bnk1.tradefinance.com/users/Admin@bnk1.tradefinance.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./config/:/etc/hyperledger/configtx
+        - ./chaincode/:/opt/gopath/src/github.com/
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+    networks:
+        - tradefinance
+    depends_on:
+      - orderer.tradefinance.com
+      - peer0.bnk1.tradefinance.com
+      - couchdb0
+      - peer0.cmp1.tradefinance.com
+      - couchdb1
+      - peer0.rgl1.tradefinance.com
+      - couchdb2

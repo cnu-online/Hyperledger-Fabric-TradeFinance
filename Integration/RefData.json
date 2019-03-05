@@ -1,0 +1,76 @@
+{
+    "users": [
+        {
+            "username": "bnk1user",
+            "password": "bnk1user",
+            "org": "bnk1"
+        },
+        {
+            "username": "bnk2user",
+            "password": "bnk2user",
+            "org": "bnk2"
+        },
+        {
+            "username": "cmp1user",
+            "password": "cmp1user",
+            "org": "cmp1"
+        },
+        {
+            "username": "cmp2user",
+            "password": "cmp2user",
+            "org": "cmp2"
+        },
+        {
+            "username": "cmp1driver",
+            "password": "cmp1driver",
+            "org": "cmp1"
+        },
+        {
+            "username": "cmp2driver",
+            "password": "cmp2driver",
+            "org": "cmp1"
+        },
+        {
+            "username": "rgl1user",
+            "password": "rgl1user",
+            "org": "rgl1"
+        }
+    ],
+    "orgs": [
+        {
+            "org": "bnk1",
+            "orgName": "Bank1",
+            "msp": "bnk1msp",
+            "orgType": "bnk",
+            "peer": {}
+        },
+        {
+            "org": "bnk1",
+            "orgName": "Bank2",
+            "msp": "bnk2msp",
+            "orgType": "bnk",
+            "peer": {}
+        },
+        {
+            "org": "cmp1",
+            "orgName": "Company1",
+            "msp": "cmp1msp",
+            "orgType": "cmp",
+            "peer": {}
+        },
+        {
+            "org": "cmp2",
+            "orgName": "Company2",
+            "msp": "cmp2msp",
+            "orgType": "cmp",
+            "peer": {}
+        },
+        {
+            "org": "rgl1",
+            "orgName": "Regulator1",
+            "msp": "rgl1msp",
+            "orgType": "rgl",
+            "peer": {}
+        }
+    ]
+}

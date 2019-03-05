@@ -1,0 +1,33 @@
+<p></p>
+<div fxLayout="column" fxLayoutGap="5px">
+  <div fxFlex="20%" fxFlex.lt-md="40%" >
+    <div fxLayout="row" fxLayoutGap="5px" fxFlexAlign="stretch">
+      <mat-card class="card1" fxFlex="10%">
+        <mat-card-content>
+          <h3>Assets: {{carcount}}</h3>
+        </mat-card-content>
+      </mat-card>
+      <mat-card fxFlex="10%" class="card2">
+        <mat-card-content>
+          <h3>Blocks: {{blockHeight}}</h3>
+        </mat-card-content>
+      </mat-card>
+      <mat-card fxFlex class="card3">
+        <mat-card-content>
+          <h3>Last Trans: {{lastTransId}}</h3>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div fxFlex="80%" fxFlex.lt-md="40%"></div>
+  <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px">
+    <div fxFlex="70%" fxFlex.lt-md="100%" >
+      <app-carlist fxFlexHeight="100%" [updatelist]="updatelist" (selectcar)="selectCar($event)">
+
+      </app-carlist>
+    </div>
+    <div fxFlex="30%" fxFlex.lt-md="100%" fxFlexHeight="100%">
+      <app-cardetail fxFlexHeight="100%" (savecar)="saveCar($event)" [carfromlist]="selectedCar"></app-cardetail>
+    </div>
+  </div>
+</div>
